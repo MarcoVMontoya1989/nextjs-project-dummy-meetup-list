@@ -1,4 +1,3 @@
-import React, {Fragment, useEffect, useState} from 'react';
 import MeetupList from "../components/meetups/MeetupList";
 
 const DUMMY_MEETUP = [
@@ -18,22 +17,20 @@ const DUMMY_MEETUP = [
   },
 ]
 
-const Index = () => {
-
-  const [loadedMeetups, setLoadedMeetups] = useState([]);
-
-  useEffect(()=> {
-    //send request
-
-    setLoadedMeetups(DUMMY_MEETUP);
-
-  }, [])
-
+const Index = (props) => {
   return (
-    <Fragment>
-      <MeetupList meetups={loadedMeetups} />
-    </Fragment>
+    <>
+      <MeetupList meetups={props.meetups} />
+    </>
   );
 };
+
+export async function getStaticProps() {
+  return {
+    props: {
+      meetups: DUMMY_MEETUP,
+    }
+  }
+}
 
 export default Index;

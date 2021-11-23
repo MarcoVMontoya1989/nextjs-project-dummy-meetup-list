@@ -10,9 +10,46 @@ const MeetupDetails = ({router}) => {
 
   return (
     <Fragment>
-      <MeetupDetail meetups={null} />
+      <MeetupDetail
+        image={'https://picsum.photos/700/600'}
+        description={'lorem Ipsum'}
+        address={'foobar'}
+        title={'pokemon'}
+      />
     </Fragment>
   );
 };
+
+export async function getStaticPaths() {
+  return {
+    fallback: false,
+    paths: [
+      {
+        params: {
+          meetupId: 'm1'
+        }
+      }
+    ]
+  }
+}
+
+export async function getStaticProps(context) {
+  //fetching data for a single meetup
+
+  const meetupIDParam = context.params.meetupId;
+
+  return {
+    props: {
+      meetupData: {
+        id: meetupIDParam,
+        title: 'A second world meetup',
+        image: 'https://picsum.photos/700/600',
+        address: 'lorem Ipsum bullshit sit amet, consectetur adipiscing elit',
+        description: 'just the second world meetup'
+      }
+    }
+  }
+
+}
 
 export default MeetupDetails;
