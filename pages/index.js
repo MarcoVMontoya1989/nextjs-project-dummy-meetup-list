@@ -37,10 +37,10 @@ const Index = (props) => {
     })();
   }, []);
 
-  let showMeetupList = (<MeetupList meetups={props.meetups} />);
+  let showMeetupList = (<MeetupList key={'meetupsList'} meetups={props.meetups} />);
 
   if (meetupList.length > 1) {
-    showMeetupList = (<MeetupList meetups={meetupList} />);
+    showMeetupList = (<MeetupList key={'meetupsList'} meetups={meetupList} />);
   }
 
   return (
