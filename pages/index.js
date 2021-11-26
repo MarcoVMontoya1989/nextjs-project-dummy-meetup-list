@@ -1,3 +1,4 @@
+import {useEffect, useState, useCallback} from "react";
 import MeetupList from "../components/meetups/MeetupList";
 
 const DUMMY_MEETUP = [
@@ -15,9 +16,29 @@ const DUMMY_MEETUP = [
     address: 'lorem Ipsum bullshit sit amet, consectetur adipiscing elit',
     description: 'just the second world meetup'
   },
-]
+];
 
 const Index = (props) => {
+
+  const [meetupList, setMeetupList] = useState([]);
+
+  useEffect(() => {
+    (async function() {
+      try {
+        const response = await fetch('api/get-meetups');
+        const json = await response.json();
+
+        console.log(json);
+
+        // setMeetupList(json.data);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, []);
+
+  console.log(' checking state ',meetupList);
+
   return (
     <>
       <MeetupList meetups={props.meetups} />

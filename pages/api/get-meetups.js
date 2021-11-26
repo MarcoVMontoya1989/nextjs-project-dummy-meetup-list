@@ -1,4 +1,5 @@
 import {MongoClient} from 'mongodb';
+// /api/new-meetup
 
 const getMeetupsHandler = async (req, res) => {
   if (req.method === 'GET') {
@@ -7,7 +8,17 @@ const getMeetupsHandler = async (req, res) => {
 
     const meetupListCollection = db.collection('meetups');
 
-    console.log(meetupListCollection); 
+    const result = await meetupListCollection.find().toArray();
 
+    // console.log('testing api', result);
+
+    client.close();
+
+    res.status(201).json({
+      message: 'success',
+      data: result
+    });
   }
-}
+};
+
+export default getMeetupsHandler;
