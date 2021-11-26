@@ -28,7 +28,7 @@ const Index = (props) => {
         const response = await fetch('api/get-meetups');
         const json = await response.json();
 
-        console.log(json);
+        setMeetupList(json.data);
 
         // setMeetupList(json.data);
       } catch (e) {
@@ -37,11 +37,15 @@ const Index = (props) => {
     })();
   }, []);
 
-  console.log(' checking state ',meetupList);
+  let showMeetupList = (<MeetupList meetups={props.meetups} />);
+
+  if (meetupList.length > 1) {
+    showMeetupList = (<MeetupList meetups={meetupList} />);
+  }
 
   return (
     <>
-      <MeetupList meetups={props.meetups} />
+      {showMeetupList}
     </>
   );
 };
