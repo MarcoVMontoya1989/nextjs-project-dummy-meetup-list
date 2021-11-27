@@ -1,55 +1,61 @@
 import {Fragment} from "react";
 import {useRouter} from "next/router";
 import MeetupDetail from "../../components/meetups/MeetupDetail";
+import {server} from "../../config";
+import {MongoClient} from "mongodb";
 
-const MeetupDetails = ({router}) => {
+const MeetupDetails = ({meetupData}) => {
 
-  const routerRef = useRouter();
-
-  console.log(routerRef);
+  const {_id, title, description, image, address} = meetupData;
 
   return (
     <Fragment>
       <MeetupDetail
-        image={'https://picsum.photos/700/600'}
-        description={'lorem Ipsum'}
-        address={'foobar'}
-        title={'pokemon'}
+        key={_id}
+        image={image}
+        description={description}
+        address={address}
+        title={title}
       />
     </Fragment>
   );
 };
 
 export async function getStaticPaths() {
+
+  const client = await MongoClient.connect(process.env.MONGODB_URI);
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+  const meetups = await meetupsCollection.find({}, {_id: 1}).toArray();
+
+
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: 'm1'
-        }
-      }
-    ]
+    paths: meetups.map((meetup) => ({
+      params: {meetupId: meetup._id.toString()}
+    })),
   }
 }
 
 export async function getStaticProps(context) {
-  //fetching data for a single meetup
-
   const meetupIDParam = context.params.meetupId;
+
+  const searchData = await fetch(`${server}/api/get-single-meetup`, {
+    method: 'POST',
+    body: JSON.stringify(meetupIDParam),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const response = await searchData.json();
 
   return {
     props: {
-      meetupData: {
-        id: meetupIDParam,
-        title: 'A second world meetup',
-        image: 'https://picsum.photos/700/600',
-        address: 'lorem Ipsum bullshit sit amet, consectetur adipiscing elit',
-        description: 'just the second world meetup'
-      }
+      meetupData: response.data
     }
   }
-
 }
 
 export default MeetupDetails;
